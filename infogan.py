@@ -71,7 +71,7 @@ def create_model(opts):
     """
     
     if opts.dataset == 'CelebA':
-        from models_celeba_b import Generator, Discriminator, Recognition, SharedPartDQ
+        from models_celeba import Generator, Discriminator, Recognition, SharedPartDQ
     else: # This is the MNIST dataset (default)
         from models import Generator, Discriminator, Recognition, SharedPartDQ
         
@@ -332,8 +332,8 @@ def training_loop(train_dataloader, opts):
     fixed_noise = []
     if opts.dataset == 'CelebA':
         # All 10 categorical values
-        for i in range(opts.cat_dims_count):
-#        for i in range(opts.cont_dims_count):
+        for i in range(opts.cat_dims_count):    # Depending on what kind of noise you want to put in
+#        for i in range(opts.cont_dims_count):  # Depending on what kind of noise you want to put in
             fixed_noise.append(get_fixed_noise(opts, var=i))
         # Add an overview:
         fixed_noise.append(get_fixed_noise(opts, var=-1))
@@ -476,18 +476,18 @@ def create_parser():
     parser = argparse.ArgumentParser()
 
     # Model hyper-parameters
-    parser.add_argument('--dataset', type=str, default = 'CelebA', help='Select dataset, choose between MNIST or CelebA')
-    parser.add_argument('--directory', type=str, default='celeb_laatste')
+    parser.add_argument('--dataset', type=str, default = 'MNIST', help='Select dataset, choose between MNIST or CelebA')
+    parser.add_argument('--directory', type=str, default='Saved_run')
     
     # Training hyper-parameters
     parser.add_argument('--num_epochs', type=int, default=20)
     parser.add_argument('--batch_size', type=int, default=64, help='The number of images in a batch.')
     parser.add_argument('--num_workers', type=int, default=0, help='The number of threads to use for the DataLoader.')
-    parser.add_argument('--cont_dims_count', type=int , default=2)
+#    parser.add_argument('--cont_dims_count', type=int , default=2)
     parser.add_argument('--lambda_value', type=int , default=1)
     
     # Directories and checkpoint/sample iterations
-    parser.add_argument('--display_debug', type=str, default=False)
+    parser.add_argument('--display_debug', type=bool, default=False)
     parser.add_argument('--log_step', type=int , default=100)
     parser.add_argument('--sample_every', type=int , default=500)
     parser.add_argument('--checkpoint_every', type=int , default=500)
@@ -498,7 +498,7 @@ def create_parser():
     
     # Save files to google drive?
     # Set to True and follow the tooltips in the colab environment to save to drive!
-    parser.add_argument('--colab', type=str, default=False)
+    parser.add_argument('--colab', type=bool, default=False)
     
     return parser
 
